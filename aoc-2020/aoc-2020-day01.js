@@ -1,17 +1,20 @@
 import fs from 'fs';
 
-const returnsTuplesOfTwoNumbersIfSumMatches = (a, sum) => {
-  const sumOfTwoNumber = (a, b) => (a + b);
+const returnsTuplesOfThreeNumbersIfSumMatches = (a, sum) => {
+  const sumOfThreeNumbers = (a, b, c) => (a + b + c);
   const sumArray = [];
   let i;
   for (i = 0; i < a.length; i++) {
     let j;
     for (j = 0; j < a.length; j++) {
-      const firstNumber = a[i]
-      const secondNumber = a[j]
-      if (sumOfTwoNumber(firstNumber, secondNumber) === sum) {
-        console.log("pushing");
-        sumArray.push([firstNumber, secondNumber]);
+      let k;
+      for(k = 0; k < a.length; k++) {
+        const firstNumber = a[i];
+        const secondNumber = a[j];
+        const thirdNumber = a[k];
+        if (sumOfThreeNumbers(firstNumber, secondNumber, thirdNumber) === sum) {
+          sumArray.push([firstNumber, secondNumber, thirdNumber]);
+        }
       }
     }
   }
@@ -30,9 +33,9 @@ const readFileAndReturnArrayOfNumbers = (fileLocation) => {
   return parsedAsIntegersArray
 }
 
-const solveAocDay01WithInputFile = (fileLocation) => {
+const solveAocDay01Part2WithInputFile = (fileLocation) => {
   const integerArray = readFileAndReturnArrayOfNumbers(fileLocation);
-  return returnsTuplesOfTwoNumbersIfSumMatches(integerArray, 2020);
+  return returnsTuplesOfThreeNumbersIfSumMatches(integerArray, 2020);
 }
 
-console.log(solveAocDay01WithInputFile('./aoc-2020-day01.input'))
+console.log(solveAocDay01Part2WithInputFile('./aoc-2020-day01.input'))
