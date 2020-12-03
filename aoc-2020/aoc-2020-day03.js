@@ -12,7 +12,6 @@ const testData = [
   ['.', '#', '.', '.', '#', '.', '.', '.', '#', '.', '#']
 ]
 
-
 const isAtree = markerCharacter => markerCharacter === '#';
 
 const translateXtoJ = (x, mapX) => {
