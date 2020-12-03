@@ -1,4 +1,4 @@
-const testPattern = [
+const testData = [
   ['.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.'],
   ['#', '.', '.', '.', '#', '.', '.', '.', '#', '.', '.'],
   ['.', '#', '.', '.', '.', '.', '#', '.', '.', '#', '.'],
@@ -69,16 +69,7 @@ const solveDay03Part2 = (pattern) => {
   return result
 }
 
-console.log('Encountered [squares, trees]', solveDay03Part1([1, 1], [3, 1], testPattern));
-console.log('Trees in every slope multipled together', solveDay03Part2(testPattern));
-
-/**
- * $ node ./aoc-2020-day03.js
- * Encountered [squares, trees] [ 4, 7 ]
- * Trees in every slope multipled together 336
- */
-
-/* 
+/*
 import { readFileAndReturnArrayOfCharacterArrays } from './aoc-2020-api.mjs';
 
 const data = readFileAndReturnArrayOfCharacterArrays('./aoc-2020-day03.txt');
@@ -87,8 +78,17 @@ console.log('Encountered [squares, trees]', solveDay03Part1([1, 1], [3, 1], data
 console.log('Trees in every slope multipled together', solveDay03Part2(data));
  */
 
- /**
+/**
  * $ node ./aoc-2020-day03.js
  * Encountered [squares, trees] [ 37, 286 ]
  * Trees in every slope multipled together 3638606400
+ */
+
+console.log('Encountered [squares, trees]', solveDay03Part1([1, 1], [3, 1], testData));
+console.log('Trees in every slope multipled together', solveDay03Part2(testData));
+
+/**
+ * $ node ./aoc-2020-day03.js
+ * Encountered [squares, trees] [ 4, 7 ]
+ * Trees in every slope multipled together 336
  */
