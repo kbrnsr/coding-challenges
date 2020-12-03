@@ -23,7 +23,7 @@ const validatePasswordPart1 = (data) => {
   return ((counter >= minimum) && (counter <= maximum));
 }
 
-const solveDay01part1 = (a) => {
+const solveDay01Part1 = (a) => {
   let validPasswords = 0;
   a.map(dataString => {
     if (validatePasswordPart1(dataString)) {
@@ -48,7 +48,7 @@ const validatePasswordPart2 = (data) => {
   return ((firstBool && !secondBool) || (!firstBool && secondBool));
 }
 
-const solveDay01part2 = (a) => {
+const solveDay01Part2 = (a) => {
   let validPasswords = 0;
   a.map(dataString => {
     if (validatePasswordPart2(dataString)) {
@@ -60,7 +60,7 @@ const solveDay01part2 = (a) => {
 };
 
 // const dataArray = readFileAndReturnArrayOfStrings('./aoc-2020-day02.txt')
-// console.log(solveDay01part1(dataArray));
-// console.log(solveDay01part2(dataArray));
-console.log(solveDay01part1(testData))
-console.log(solveDay01part2(testData))
+// console.log(solveDay01Part1(dataArray));
+// console.log(solveDay01Part2(dataArray));
+console.log(solveDay01Part1(testData))
+console.log(solveDay01Part2(testData))
