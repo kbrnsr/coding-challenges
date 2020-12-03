@@ -1,29 +1,36 @@
-// import { readFileAndReturnArrayOfStrings } from './aoc-2020-api.mjs';
-
 const testData = [
   "1-3 a: abcde",
   "1-3 b: cdefg",
   "2-9 c: ccccccccc"
 ]
 
-const validatePasswordPart1 = (data) => {
+const regexString = (data) => {
   const re = /(\d+)-(\d+) ([a-z]{1}): ([a-z]*)/;
-  const found = data.match(re);
-  const minimum = parseInt(found[1]);
-  const maximum = parseInt(found[2]);
-  const charString = found[3];
-  const rest = found[4];
-  let counter = 0;
-  let i;
-  for (i = 0; i < rest.length; i += 1) {
-    if (rest[i] === charString) {
-      counter += 1;
-    }
-  }
-  return ((counter >= minimum) && (counter <= maximum));
+  const matchedData = data.match(re);
+  const leftInt = parseInt(matchedData[1]);
+  const rightInt = parseInt(matchedData[2]);
+  const charString = matchedData[3];
+  const restOfTheString = matchedData[4];
+  return [leftInt, rightInt, charString, restOfTheString];
 }
 
-const solveDay01Part1 = (a) => {
+const validatePasswordPart1 = (data) => {
+  const [min, max, charStr, theRest] = regexString(data);
+  let counter = 0;
+  let i;
+  for (i = 0; i < theRest.length; i += 1) {
+    if (theRest[i] === charStr) {
+      counter += 1;
+      // No point in continuing if counter is out of bounds
+      if (counter > max) {
+        return false;
+      }
+    }
+  }
+  return (counter >= min);
+}
+
+const solveDay02Part1 = (a) => {
   let validPasswords = 0;
   a.map(dataString => {
     if (validatePasswordPart1(dataString)) {
@@ -35,20 +42,15 @@ const solveDay01Part1 = (a) => {
 };
 
 const validatePasswordPart2 = (data) => {
-  const re = /(\d+)-(\d+) ([a-z]{1}): ([a-z]*)/;
-  const found = data.match(re);
-  const firstIndex = (parseInt(found[1]) - 1);
-  const secondIndex = (parseInt(found[2]) - 1);
-  const charString = found[3];
-  const rest = found[4];
+  const [leftVal, rightVal, charStr, theRest] = regexString(data);
   // JS have no logical XOR...
-  const firstBool = (rest[firstIndex] === charString);
-  const secondBool = (rest[secondIndex] === charString);
+  const firstBool = (theRest[(leftVal - 1)] === charStr);
+  const secondBool = (theRest[(rightVal - 1)] === charStr);
   // Gotta love circuit diagrams: (A && NOT B) or (NOT A && B)
   return ((firstBool && !secondBool) || (!firstBool && secondBool));
 }
 
-const solveDay01Part2 = (a) => {
+const solveDay02Part2 = (a) => {
   let validPasswords = 0;
   a.map(dataString => {
     if (validatePasswordPart2(dataString)) {
@@ -59,8 +61,26 @@ const solveDay01Part2 = (a) => {
   return validPasswords;
 };
 
-// const dataArray = readFileAndReturnArrayOfStrings('./aoc-2020-day02.txt')
-// console.log(solveDay01Part1(dataArray));
-// console.log(solveDay01Part2(dataArray));
-console.log(solveDay01Part1(testData))
-console.log(solveDay01Part2(testData))
+/* 
+import { readFileAndReturnArrayOfStrings } from './aoc-2020-api.mjs';
+
+const data = readFileAndReturnArrayOfStrings('./aoc-2020-day02.txt')
+
+console.log('Valid passwords', solveDay02Part1(data));
+console.log('Valid passwords (new rules)', solveDay02Part2(data));
+ */
+
+/**
+ * $ node ./aoc-2020-day02.js
+ * Valid passwords 500
+ * Valid passwords (new rules) 313
+ */
+
+console.log('Valid passwords', solveDay02Part1(testData));
+console.log('Valid passwords (new rules)', solveDay02Part2(testData));
+
+/**
+ * $ node ./aoc-2020-day02.js
+ * Valid passwords 2
+ * Valid passwords (new rules) 1
+ */

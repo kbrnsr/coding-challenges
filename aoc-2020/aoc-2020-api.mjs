@@ -1,18 +1,5 @@
 import fs from 'fs';
 
-export const readFileAndReturnArrayOfStrings = (path) => {
-  const fileContent = fs.readFileSync(path, 'utf-8');
-  const stringArray = fileContent.trim().split('\n');
-  const parsedAsStringArray = stringArray
-    .map(line => {
-      const trimmedLine = line.trim();
-      if (trimmedLine !== '') {
-        return trimmedLine;
-      }
-    });
-  return parsedAsStringArray;
-}
-
 export const readFileAndReturnArrayOfCharacterArrays = (fileLocation) => {
   const fileContent = fs.readFileSync(fileLocation, 'utf-8');
   const stringArray = fileContent.trim().split('\n');
@@ -39,5 +26,10 @@ const readLinesAndExecuteFunction = (fileLocation, executeFunction) => {
 
 export const readFileAndReturnArrayOfIntegers = (fileLocation) => {
   const parseInteger = line => parseInt(line, 10);
-  return readLinesAndExecuteFunction(fileLocation, parseInteger)
+  return readLinesAndExecuteFunction(fileLocation, parseInteger);
+}
+
+export const readFileAndReturnArrayOfStrings = (fileLocation) => {
+  const parseString = line => line;
+  return readLinesAndExecuteFunction(fileLocation, parseString);
 }
