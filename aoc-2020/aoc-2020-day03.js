@@ -59,4 +59,7 @@ const solveday03part1 = (startLocation, slope, pattern) => {
   );
 }
 
+//import { readFileAndReturnArrayOfCharacterArrays } from './aoc-2020-api.mjs';
+//const data = readFileAndReturnArrayOfCharacterArrays('./aoc-2020-day03.txt');
+//console.log(solveday03part1([1, 1], [3, 1], data));
 console.log(solveday03part1([1, 1], [3, 1], testPattern));

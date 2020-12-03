@@ -13,3 +13,15 @@ export const readFileAndReturnArrayOfStrings = (path) => {
     });
   return stringArrayTrimmedAndNotEmpty;
 }
+
+export const readFileAndReturnArrayOfCharacterArrays = (fileLocation) => {
+  const fileContent = fs.readFileSync(fileLocation, 'utf-8');
+  const stringArray = fileContent.trim().split('\n');
+  const parsedAsCharactersArray = stringArray.map(line => {
+    const trimmedLine = line.trim();
+    if (trimmedLine !== '') {
+      return trimmedLine.split('');
+    }
+  });
+  return parsedAsCharactersArray
+}
