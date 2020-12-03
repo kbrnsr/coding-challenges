@@ -56,6 +56,7 @@ const solveDay01Part2 = (data, sum) => {
   return [result, (result[0] * result[1] * result[2])];
 }
 
+/* 
 import { readFileAndReturnArrayOfIntegers } from './aoc-2020-api.mjs';
 
 const data = readFileAndReturnArrayOfIntegers('./aoc-2020-day01.txt');
@@ -64,6 +65,7 @@ console.log('Two numbers with sum 2020 gives product'
   , solveDay01Part1(data, 2020));
 console.log('Three numbers with sum 2020 gives product'
   , solveDay01Part2(data, 2020));
+ */
 
 /**
  * $ node ./aoc-2020-day01.js
