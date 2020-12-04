@@ -45,14 +45,6 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719`;
 const validLabels = ['byr', 'iyr', 'eyr', 'hgt'
   , 'hcl', 'ecl', 'pid']
 
-let byr = 0;
-let iyr = 0;
-let eyr = 0;
-let hgt = 0;
-let hcl = 0;
-let ecl = 0;
-let pid = 0;
-
 const extractDataFromString = (dataString) => {
   const lines = dataString.split('\n');
   const result = {};
@@ -67,8 +59,9 @@ const extractDataFromString = (dataString) => {
   });
   return result;
 }
+
 const isLength = (val, theLength) => val.length === theLength;
-const isLength9 = (val) => val.length === 9;
+const isLength4 = (val) => val.length === 4;
 const isBetween = (val, min, max) => (min <= val) && (val <= max);
 const isContainedIn = (val, container) => {
   return container.reduce((acc, containerValue) => {
@@ -79,35 +72,39 @@ const isContainedIn = (val, container) => {
 const checkByr = (val) => {
   const re = /[0-9]{4}/g;
   const regexBool = re.test(val);
+  const lengthBool = isLength4(val);
   const betweenBool = isBetween(val, 1920, 2002);
-  return regexBool && betweenBool;
+  return regexBool && lengthBool && betweenBool;
 }
 
 const checkIyr = (val) => {
   const re = /[0-9]{4}/g;
   const regexBool = re.test(val);
+  const lengthBool = isLength4(val);
   const betweenBool = isBetween(val, 2010, 2020);
-  return regexBool && betweenBool;
+  return regexBool && lengthBool && betweenBool;
 }
 
 const checkEyr = (val) => {
   const re = /[0-9]{4}/g;
   const regexBool = re.test(val);
+  const lengthBool = isLength4(val);
   const betweenBool = isBetween(val, 2020, 2030);
-  return regexBool && betweenBool;
+  return regexBool && lengthBool && betweenBool;
 }
 
 const checkHgt = (val) => {
   const getMaxLengthAndMinMax = (suffix) => {
-    if (suffix === 'cm') { return ['100'.length, 150, 193] }
-    if (suffix === 'in') { return ['10'.length, 59, 76] }
+    if (suffix === 'cm') { return ['100cm'.length, 150, 193] }
+    if (suffix === 'in') { return ['10in'.length, 59, 76] }
   }
   const hgtInteger = val.slice(0, -2)
   const hgtSuffix = val.slice(-2)
   const containBool = isContainedIn(hgtSuffix, ['cm', 'in']);
   if (!containBool) { return false; }
+
   const [maxValueLength, min, max] = getMaxLengthAndMinMax(hgtSuffix);
-  const lengthBool = isLength(hgtInteger, maxValueLength);
+  const lengthBool = isLength(val, maxValueLength);
   const betweenBool = isBetween(hgtInteger, min, max);
   return lengthBool && betweenBool;
 }
@@ -118,7 +115,8 @@ const checkHcl = (val) => {
   const hclValue = val.slice(1);
   if (hclPrefix !== '#') { return false };
   const hexBool = re.test(hclValue);
-  return hexBool;
+  const lengthBool = isLength(val, '#ffffff'.length);
+  return lengthBool && hexBool;
 }
 
 const checkEcl = (val) => {
@@ -130,7 +128,7 @@ const checkEcl = (val) => {
 const checkPid = (val) => {
   const re = /[0-9]{9}/g;
   const padVal = val.padStart(9, '0');
-  if (!isLength9(padVal)) { return false; }
+  if (!isLength(val, 9)) { return false; }
   const regexBool = re.test(padVal);
   return regexBool;
 }
@@ -160,6 +158,9 @@ const isValidInfoWithRules = (objectToBeChecked) => {
   const objectKeys = Object.keys(objectToBeChecked);
   let result = validLabels.reduce((acc, label) => {
     if (!objectKeys.includes(label)) {
+      return acc && false;
+    }
+    if (objectToBeChecked[label] === undefined) {
       return acc && false;
     }
     return checkRulesForLabel(label, objectToBeChecked[label])
@@ -195,7 +196,7 @@ const solveDay04Part2 = (data) => {
   return result;
 }
 
-
+/* 
 import { readFileAndReturnFileContent } from './aoc-2020-api.mjs';
 
 const data = readFileAndReturnFileContent('./aoc-2020-day04.txt');
@@ -203,19 +204,23 @@ const data = readFileAndReturnFileContent('./aoc-2020-day04.txt');
 console.log('Valid passports', solveDay04Part1(data));
 console.log('Valid passports with rules'
   , solveDay04Part2(data));
+ */
 
 /**
  * $ node ./aoc-2020-day04.js
  * Valid passports 250
+ * Valid passports with rules 158
  */
-/*
+
 console.log('Valid passports', solveDay04Part1(testData));
 console.log('Valid passports with rules (some invalid)'
   , solveDay04Part2(testDataRulesInvalid));
 console.log('Valid passports with rules (some valid)'
   , solveDay04Part2(testDataRulesValid));
- */
+
 /**
  * $ node ./aoc-2020-day04.js
  * Valid passports 2
+ * Valid passports with rules (some invalid) 0
+ * Valid passports with rules (some valid) 4
  */
