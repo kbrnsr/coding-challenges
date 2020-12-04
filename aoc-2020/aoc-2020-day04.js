@@ -13,6 +13,9 @@ hgt:179cm
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in`;
 
+const validLabels = ['byr', 'iyr', 'eyr', 'hgt'
+  , 'hcl', 'ecl', 'pid']
+
 const extractDataFromString = (dataString) => {
   const lines = dataString.split('\n');
   const result = {};
@@ -28,7 +31,7 @@ const extractDataFromString = (dataString) => {
   return result;
 }
 
-const isValidInfo = (validLabels, objectToBeChecked) => {
+const isValidInfo = (objectToBeChecked) => {
   const objectKeys = Object.keys(objectToBeChecked);
   let result = validLabels.reduce((acc, label) => {
     return objectKeys.includes(label)
@@ -38,12 +41,10 @@ const isValidInfo = (validLabels, objectToBeChecked) => {
 }
 
 const solveDay04Part1 = (data) => {
-  const validLabels = ['byr', 'iyr', 'eyr', 'hgt'
-    , 'hcl', 'ecl', 'pid']
   const stringArray = data.split('\n\n');
   const infoArray = stringArray.map(s => extractDataFromString(s));
   const result = infoArray.reduce((acc, val) => {
-    return isValidInfo(validLabels, val) ? acc + 1 : acc
+    return isValidInfo(val) ? acc + 1 : acc
   }, 0)
   return result;
 }
