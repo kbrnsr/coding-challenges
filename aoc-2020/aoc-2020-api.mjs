@@ -26,3 +26,7 @@ export const readFileAndReturnArrayOfCharacterArrays = (fileLocation) => {
   const parseCharacter = line => line.split('');
   return readLinesAndExecuteFunction(fileLocation, parseCharacter);
 }
+
+export const readFileAndReturnFileContent = (fileLocation) => {
+  return fs.readFileSync(fileLocation, 'utf-8');
+}

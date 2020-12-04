@@ -48,6 +48,19 @@ const solveDay04Part1 = (data) => {
   return result;
 }
 
+/* 
+import { readFileAndReturnFileContent } from './aoc-2020-api.mjs';
+
+const data = readFileAndReturnFileContent('./aoc-2020-day04.txt');
+
+console.log('Valid passports', solveDay04Part1(data));
+ */
+
+/**
+ * $ node ./aoc-2020-day04.js
+ * Valid passports 250
+ */
+
 console.log('Valid passports', solveDay04Part1(testData));
 
 /**
