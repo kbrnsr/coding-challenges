@@ -50,8 +50,8 @@ const traverseMapAndCount = (startJ, startI, maxJ, maxI, slopeJ, slopeI, pattern
 const solveDay03Part1 = (startLocation, slope, pattern) => {
   const patternX = pattern[0].length;
   const patternY = pattern.length;
-  let locationX = (startLocation[0] - 1);
-  let locationY = (startLocation[1] - 1);
+  const locationX = (startLocation[0] - 1);
+  const locationY = (startLocation[1] - 1);
 
   return traverseMapAndCount(
     locationX, locationY, patternX, patternY, slope[0], slope[1], pattern
