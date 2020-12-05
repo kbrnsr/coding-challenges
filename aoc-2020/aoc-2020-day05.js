@@ -65,20 +65,14 @@ const solveDay05Part2 = (boardingData) => {
 
   seatArray.sort((a, b) => a - b);
   let i;
-  for (i = 1; i < (seatArray.length - 1); i += 1) {
+  for (i = 1; i < seatArray.length; i += 1) {
     const prevSeat = seatArray[i - 1];
     const currentSeat = seatArray[i];
-    const nextSeat = seatArray[i + 1];
 
-    if (!((nextSeat - prevSeat) === 2)) {
-      // console.log([prevSeat, currentSeat, nextSeat])
-      // This gives if no value is returned:
-      // [ 674, 675, 677 ]
-      // [ 675, 677, 678 ]
-      return currentSeat + 1;
+    if ((currentSeat - prevSeat) == 2) {
+      return prevSeat + 1;
     }
   }
-
   return undefined;
 }
 
