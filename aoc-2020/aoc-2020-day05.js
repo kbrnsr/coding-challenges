@@ -54,10 +54,10 @@ const solveDay05Part1 = (boardingData) => {
   return maxSeat;
 };
 
+/* 
 import { readFileAndReturnArrayOfCharacterArrays }
   from './aoc-2020-api.mjs';
 
-/* 
 const data =
   readFileAndReturnArrayOfCharacterArrays('./aoc-2020-day05.txt');
 
