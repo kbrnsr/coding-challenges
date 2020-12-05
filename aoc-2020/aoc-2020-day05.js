@@ -54,7 +54,35 @@ const solveDay05Part1 = (boardingData) => {
   return maxSeat;
 };
 
-/* 
+const solveDay05Part2 = (boardingData) => {
+  const seatArray = [];
+  boardingData.map((boardingPass) => {
+    const [row, column, seat]
+      = rowColumnSeatIdFrom(boardingPass);
+    seatArray.push(seat);
+    return [row, column, seat];
+  })
+
+  seatArray.sort((a, b) => a - b);
+  let i;
+  for (i = 1; i < (seatArray.length - 1); i += 1) {
+    const prevSeat = seatArray[i - 1];
+    const currentSeat = seatArray[i];
+    const nextSeat = seatArray[i + 1];
+
+    if (!((nextSeat - prevSeat) === 2)) {
+      // console.log([prevSeat, currentSeat, nextSeat])
+      // This gives if no value is returned:
+      // [ 674, 675, 677 ]
+      // [ 675, 677, 678 ]
+      return currentSeat + 1;
+    }
+  }
+
+  return undefined;
+}
+
+/*
 import { readFileAndReturnArrayOfCharacterArrays }
   from './aoc-2020-api.mjs';
 
@@ -62,11 +90,13 @@ const data =
   readFileAndReturnArrayOfCharacterArrays('./aoc-2020-day05.txt');
 
 console.log("Max seat ID", solveDay05Part1(data));
+console.log("Missing seat ID", solveDay05Part2(data));
  */
 
 /**
  * $ node ./aoc-2020-day05.js
  * Max seat ID { row: 124, column: 6, seat: 998, bPass: 'BBBBBFFRRL' }
+ * Missing seat ID 676
  */
 
 console.log("Max seat ID", solveDay05Part1(testData));
