@@ -16,10 +16,10 @@ const calculateBinaryTraverse = (left, right, minimum, maximum, data) => {
     const currentVal = data[i];
     if (currentVal === left) {
       lower = lower;
-      upper = upper - Math.floor((upper - lower) / 2);
+      upper = Math.floor(upper - ((upper - lower) / 2));
       calculated = lower;
     } else if (currentVal === right) {
-      lower = lower + Math.ceil((upper - lower) / 2);
+      lower = Math.ceil(lower + ((upper - lower) / 2));
       upper = upper;
       calculated = upper;
     }
@@ -39,24 +39,37 @@ const rowColumnSeatIdFrom = (bPass) => {
   return [row, column, seat];
 };
 
-const solveDay05Part1 = (data) => {
+const solveDay05Part1 = (boardingData) => {
   let maxSeat = {
-    row: 0, column: 0, seat: 0
+    bPass: '', row: 0, column: 0, seat: 0
   };
-  const boardingInfo = testData.map((boardingPass) => {
+  boardingData.map((boardingPass) => {
     const [row, column, seat]
       = rowColumnSeatIdFrom(boardingPass);
     if (seat > maxSeat.seat) {
-      maxSeat = { row, column, seat };
+      maxSeat = { row, column, seat, bPass: boardingPass.join('') };
     }
     return [row, column, seat];
   })
   return maxSeat;
 };
 
+import { readFileAndReturnArrayOfCharacterArrays }
+  from './aoc-2020-api.mjs';
+
+const data =
+  readFileAndReturnArrayOfCharacterArrays('./aoc-2020-day05.txt');
+
+console.log("Max seat ID", solveDay05Part1(data));
+
+/**
+ * $ node ./aoc-2020-day05.js
+ * Max seat ID { row: 124, column: 6, seat: 998, bPass: 'BBBBBFFRRL' }
+ */
+
 console.log("Max seat ID", solveDay05Part1(testData));
 
 /**
  * $ node ./aoc-2020-day05.js
- * Max seat ID { row: 102, column: 4, seat: 820 }
+ * Max seat ID { row: 102, column: 4, seat: 820, bPass: 'BBFFBBFRLL' }
  */
