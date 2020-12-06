@@ -27,7 +27,7 @@ const countUniqueAnswers = group => {
       }
     });
   })
-  return uniqueGroupAnswers;
+  return [uniqueGroupAnswers, group.length];
 }
 
 const transformDataToGroups = (groupData) => {
@@ -44,8 +44,9 @@ const solveDay06Part1 = (data) => {
     return countUniqueAnswers(group);
   })
   const result = answersCount.reduce((acc, current) => {
-    const currentLength = Object.keys(current).length;
-    return acc + currentLength;
+    const [answers,] = current;
+    const keysLength = Object.keys(answers).length
+    return acc + keysLength;
   }, 0)
 
   return result;
