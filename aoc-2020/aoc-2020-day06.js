@@ -47,7 +47,24 @@ const solveDay06Part1 = (data) => {
   return result;
 };
 
-console.log("Sum of unique answers in groups", solveDay06Part1(testData))
+/* 
+import { readFileAndReturnFileContent }
+  from './aoc-2020-api.mjs';
+
+const data =
+  readFileAndReturnFileContent('./aoc-2020-day06.txt');
+
+console.log("Sum of unique answers in groups"
+  , solveDay06Part1(data));
+ */
+
+/**
+ * $ node ./aoc-2020-day06.js
+ * Sum of unique answers in groups 6768
+ */
+
+console.log("Sum of unique answers in groups"
+  , solveDay06Part1(testData));
 
 /**
  * $ node ./aoc-2020-day06.js
