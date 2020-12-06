@@ -70,27 +70,21 @@ const isContainedIn = (val, container) => {
 }
 
 const checkByr = (val) => {
-  const re = /[0-9]{4}/g;
-  const regexBool = re.test(val);
   const lengthBool = isLength4(val);
   const betweenBool = isBetween(val, 1920, 2002);
-  return regexBool && lengthBool && betweenBool;
+  return lengthBool && betweenBool;
 }
 
 const checkIyr = (val) => {
-  const re = /[0-9]{4}/g;
-  const regexBool = re.test(val);
   const lengthBool = isLength4(val);
   const betweenBool = isBetween(val, 2010, 2020);
-  return regexBool && lengthBool && betweenBool;
+  return lengthBool && betweenBool;
 }
 
 const checkEyr = (val) => {
-  const re = /[0-9]{4}/g;
-  const regexBool = re.test(val);
   const lengthBool = isLength4(val);
   const betweenBool = isBetween(val, 2020, 2030);
-  return regexBool && lengthBool && betweenBool;
+  return lengthBool && betweenBool;
 }
 
 const checkHgt = (val) => {
@@ -126,11 +120,10 @@ const checkEcl = (val) => {
 }
 
 const checkPid = (val) => {
-  const re = /[0-9]{9}/g;
-  const padVal = val.padStart(9, '0');
-  if (!isLength(val, 9)) { return false; }
-  const regexBool = re.test(padVal);
-  return regexBool;
+  const [min, max] = [0, "999999999"];
+  const lengthBool = isLength(val, max.length)
+  const betweenBool = isBetween(val, min, max);
+  return lengthBool && betweenBool;
 }
 
 const checkRulesForLabel = (label, infoToBeChecked) => {
