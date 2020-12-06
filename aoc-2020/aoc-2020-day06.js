@@ -16,8 +16,8 @@ b`
 
 const countUniqueAnswers = group => {
   const uniqueGroupAnswers = {};
-  group.map(personAnwser => {
-    const personSplit = personAnwser.split('');
+  group.map(personAnswer => {
+    const personSplit = personAnswer.split('');
     personSplit.map(answer => {
       if (!Object.keys(uniqueGroupAnswers)
         .includes(answer)) {
@@ -32,7 +32,10 @@ const countUniqueAnswers = group => {
 
 const transformDataToGroups = (groupData) => {
   const groupSplit = groupData.split('\n\n');
-  const groupTrans = groupSplit.map(group => {
+  const groupTrim = groupSplit.map(group => {
+    return group.trim();
+  });
+  const groupTrans = groupTrim.map(group => {
     return group.split('\n');
   })
   return groupTrans;
@@ -95,7 +98,7 @@ console.log("Sum of common answers in groups"
 /**
  * $ node ./aoc-2020-day06.js
  * Sum of unique answers in groups 6768
- * Sum of common answers in groups 3484
+ * Sum of common answers in groups 3489
  */
 
 console.log("Sum of unique answers in groups"
