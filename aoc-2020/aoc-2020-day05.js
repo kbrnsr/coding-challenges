@@ -14,13 +14,12 @@ const calculateBinaryTraverse = (left, right, minimum, maximum, data) => {
   let i;
   for (i = 0; i < data.length; i++) {
     const currentVal = data[i];
+    const mid = ((upper - lower) / 2);
     if (currentVal === left) {
-      lower = lower;
-      upper = Math.floor(upper - ((upper - lower) / 2));
+      upper = Math.floor(upper - mid);
       calculated = lower;
     } else if (currentVal === right) {
-      lower = Math.ceil(lower + ((upper - lower) / 2));
-      upper = upper;
+      lower = Math.ceil(lower + mid);
       calculated = upper;
     }
   }
@@ -39,35 +38,42 @@ const rowColumnSeatIdFrom = (bPass) => {
   return [row, column, seat];
 };
 
+const insertSorted = (val, c) => {
+  const cLength = c.length;
+  if (cLength === 0) {
+    c[0] = val;
+    return val;
+  } else {
+    let i;
+    for (i = 0; i < cLength; i += 1) {
+      if (c[i].seat > val.seat) {
+        c.splice(i, 0, val);
+        return val;
+      }
+    }
+    c.push(val);
+    return val;
+  }
+}
+
 const solveDay05Part1 = (boardingData) => {
-  let maxSeat = {
-    bPass: '', row: 0, column: 0, seat: 0
-  };
+  const sortedBySeatId = [];
   boardingData.map((boardingPass) => {
     const [row, column, seat]
       = rowColumnSeatIdFrom(boardingPass);
-    if (seat > maxSeat.seat) {
-      maxSeat = { row, column, seat, bPass: boardingPass.join('') };
-    }
+    insertSorted({
+      row, column, seat, bPass: boardingPass.join('')
+    }, sortedBySeatId);
     return [row, column, seat];
   })
-  return maxSeat;
+  return sortedBySeatId;
 };
 
-const solveDay05Part2 = (boardingData) => {
-  const seatArray = [];
-  boardingData.map((boardingPass) => {
-    const [row, column, seat]
-      = rowColumnSeatIdFrom(boardingPass);
-    seatArray.push(seat);
-    return [row, column, seat];
-  })
-
-  seatArray.sort((a, b) => a - b);
+const solveDay05Part2 = (sortedSeats) => {
   let i;
-  for (i = 1; i < seatArray.length; i += 1) {
-    const prevSeat = seatArray[i - 1];
-    const currentSeat = seatArray[i];
+  for (i = 1; i < sortedSeats.length; i += 1) {
+    const prevSeat = sortedSeats[i - 1].seat;
+    const currentSeat = sortedSeats[i].seat;
 
     if ((currentSeat - prevSeat) == 2) {
       return prevSeat + 1;
@@ -76,15 +82,16 @@ const solveDay05Part2 = (boardingData) => {
   return undefined;
 }
 
-/*
+/* 
 import { readFileAndReturnArrayOfCharacterArrays }
   from './aoc-2020-api.mjs';
 
 const data =
   readFileAndReturnArrayOfCharacterArrays('./aoc-2020-day05.txt');
 
-console.log("Max seat ID", solveDay05Part1(data));
-console.log("Missing seat ID", solveDay05Part2(data));
+const fileSeats = solveDay05Part1(data)
+console.log("Max seat ID", fileSeats[fileSeats.length - 1]);
+console.log("Missing seat ID", solveDay05Part2(fileSeats));
  */
 
 /**
@@ -93,7 +100,8 @@ console.log("Missing seat ID", solveDay05Part2(data));
  * Missing seat ID 676
  */
 
-console.log("Max seat ID", solveDay05Part1(testData));
+const testSeats = solveDay05Part1(testData)
+console.log("Max seat ID", testSeats[testSeats.length - 1]);
 
 /**
  * $ node ./aoc-2020-day05.js
