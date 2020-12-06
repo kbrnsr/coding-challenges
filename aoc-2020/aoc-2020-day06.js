@@ -15,16 +15,19 @@ a
 b`
 
 const countUniqueAnswers = group => {
-  const uniqueGroupAnswers = [];
+  const uniqueGroupAnswers = {};
   group.map(personAnwser => {
     const personSplit = personAnwser.split('');
     personSplit.map(answer => {
-      if (!uniqueGroupAnswers.includes(answer)) {
-        uniqueGroupAnswers.push(answer);
+      if (!Object.keys(uniqueGroupAnswers)
+        .includes(answer)) {
+        uniqueGroupAnswers[answer] = 1;
+      } else {
+        uniqueGroupAnswers[answer] += 1
       }
     });
   })
-  return uniqueGroupAnswers.length;
+  return uniqueGroupAnswers;
 }
 
 const transformDataToGroups = (groupData) => {
@@ -41,7 +44,8 @@ const solveDay06Part1 = (data) => {
     return countUniqueAnswers(group);
   })
   const result = answersCount.reduce((acc, current) => {
-    return acc + current;
+    const currentLength = Object.keys(current).length;
+    return acc + currentLength;
   }, 0)
 
   return result;
