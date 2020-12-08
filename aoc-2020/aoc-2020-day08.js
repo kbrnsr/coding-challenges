@@ -9,63 +9,50 @@ const testData = ['nop +0',
   'acc +6'];
 const [ACC, NOP, JMP] = ['acc', 'nop', 'jmp'];
 
-const CputThread = (instructions, initialAcc) => {
-  let tAcc = [initialAcc];
-  let tInstructIndex = 0;
+const Cpu = (instructions) => {
+  let cAcc = 0;
+  let instructPointer = 0;
   const execInstruct = (instruct) => {
     const { opcode, sign, aInteger } = instruct;
     const theInteger = parseInt([sign, aInteger]
       .join(''));
     switch (opcode) {
       case JMP:
-        tInstructIndex += theInteger;
-        tInstructIndex -= 1;
+        instructPointer += theInteger;
+        instructPointer -= 1;
         break;
       case ACC:
-        tAcc.unshift(tAcc[0] + theInteger);
+        cAcc += theInteger;
         break;
       case NOP:
         break;
       default:
+        console.log('Something has gone terribly wrong');
         return false;
     }
     return true;
   };
-  const tExecute = (iToExecute) => {
-    let i;
-    for (i = 0; i < iToExecute; i++) {
-      if (tInstructIndex >= instructions.length) {
-        return [tInstructIndex, tAcc];
-      }
-      execInstruct(instructions[tInstructIndex])
-      tInstructIndex += 1;
-    }
-    return [tInstructIndex, tAcc];
-  };
-  return {
-    tExecute
-  };
-};
 
-const Cpu = (instructions) => {
-  const cpuT = CputThread(instructions, 0);
   const execute = () => {
     const executed = [];
-    let tPointer = 0, tValue = [];
+    const accArray = [];
     let continueExec = true;
     while (continueExec) {
-      if (executed.includes(tPointer)) {
-        return [tPointer, tValue];
-      } else {
-        executed.push(tPointer);
+      if (executed.includes(instructPointer)) {
+        return [accArray, executed];
       }
-      [tPointer, tValue] = cpuT.tExecute(1);
-      if (instructions[tPointer] === undefined) {
+      execInstruct(instructions[instructPointer]);
+      executed.unshift(instructPointer);
+      accArray.unshift(cAcc);
+      instructPointer += 1;
+      // Next instruction doesn't exist
+      if (instructions[instructPointer] === undefined) {
         continueExec = false;
       }
     }
-    return [tPointer, tValue];
+    return [accArray, executed];
   };
+
   return {
     execute
   };
@@ -75,7 +62,11 @@ const parseDatum = (datum) => {
   const instructionRegex = /(acc|nop|jmp){1} (\+|-)(\d+)/;
   const parsedDatum = [...datum.match(instructionRegex)];
   const [, opcode, sign, aInteger] = parsedDatum;
-  const instruction = { opcode, sign, aInteger };
+  const instruction = {
+    opcode,
+    sign,
+    aInteger
+  };
   return instruction
 }
 
@@ -86,8 +77,8 @@ const transformDataToInstructions = (data) => {
   return instructions;
 };
 
-const solveDay08Part1 = (Data) => {
-  const instructions = transformDataToInstructions(Data);
+const solveDay08Part1 = (data) => {
+  const instructions = transformDataToInstructions(data);
   const result = Cpu(instructions).execute();
   return result;
 };
@@ -96,21 +87,20 @@ const solveDay08Part1 = (Data) => {
 import { readFileAndReturnArrayOfStrings } from './aoc-2020-api.mjs';
 
 const data = readFileAndReturnArrayOfStrings('./aoc-2020-day08.txt');
-const result = solveDay08Part1(data);
-console.log('Stop before executing [index, accumulator]'
-  , [result[0], result[1][0]]);
+
+console.log('Accumulator before hitting infinite loop'
+  , solveDay08Part1(data)[0][1]);
  */
 
 /**
  * $ node ./aoc-2020-day08.js
- * Stop before executing [index, accumulator] [ 488, 1941 ]
+ * Accumulator before hitting infinite loop 1941
  */
 
-const testResult = solveDay08Part1(testData);
-console.log('Stop before executing [index, accumulator]'
-  , [testResult[0], testResult[1][0]]);
+console.log('Accumulator before hitting infinite loop'
+  , solveDay08Part1(testData)[0][1]);
 
 /**
  * $ node ./aoc-2020-day08.js
- * Stop before executing [index, accumulator] [ 1, 5 ]
+ * Accumulator before hitting infinite loop 5
  */
