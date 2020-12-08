@@ -7,6 +7,13 @@ const testData = ['light red bags contain 1 bright white bag, 2 muted yellow bag
   'vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.',
   'faded blue bags contain no other bags.',
   'dotted black bags contain no other bags.'];
+const testData2 = ['shiny gold bags contain 2 dark red bags.',
+  'dark red bags contain 2 dark orange bags.',
+  'dark orange bags contain 2 dark yellow bags.',
+  'dark yellow bags contain 2 dark green bags.',
+  'dark green bags contain 2 dark blue bags.',
+  'dark blue bags contain 2 dark violet bags.',
+  'dark violet bags contain no other bags.']
 
 const transformTextToBags = (bagString) => {
   const bagsRegex = /((\d) ([a-z]+) ([a-z]+))+/g;
@@ -74,6 +81,33 @@ const solveDay07Part1 = (stringArray) => {
   return countColor;
 };
 
+const requiredBagsInBag = (bag, c) => {
+  const checkBags = c[bag];
+  const bagsInThisbag = checkBags.length;
+
+  const result = checkBags.reduce((acc, currBag) => {
+    const res = requiredBagsInBag(currBag.key, c);
+    return (acc + (currBag.amount * res));
+  }, 1);
+  return result;
+
+};
+
+const countRequiredBags = (bagAdj, bagColor, c) => {
+  const checkBag = [bagAdj, bagColor].join(' ');
+  const result = requiredBagsInBag(checkBag, c);
+  return result - 1;
+};
+
+const solveDay07Part2 = (stringArray) => {
+  // key = 'light red'
+  // value = '[{amount, adj, color}, {...}]'
+  const results = transformTextToBagsLists(stringArray);
+  const requiredCount = countRequiredBags('shiny', 'gold', results);
+
+  return requiredCount;
+};
+
 /* 
 import { readFileAndReturnArrayOfStrings }
   from './aoc-2020-api.mjs';
@@ -82,12 +116,23 @@ const data = readFileAndReturnArrayOfStrings('./aoc-2020-day07.txt');
 
 console.log('Unique bag colors that can contain at least one',
   'shiny gold bag', solveDay07Part1(data).length);
+console.log('Required bags in',
+  'shiny gold bag', solveDay07Part2(data));
+ */
+
+/**
+ * $ node ./aoc-2020-day07.js
+ * Unique bag colors that can contain at least one shiny gold bag 370
+ * Required bags in shiny gold bag 29547
  */
 
 console.log('Unique bag colors that can contain at least one',
   'shiny gold bag', solveDay07Part1(testData).length);
+console.log('Required bags in',
+  'shiny gold bag', solveDay07Part2(testData2));
 
 /**
  * $ node ./aoc-2020-day07.js
  * Unique bag colors that can contain at least one shiny gold bag 4
+ * Required bags in shiny gold bag 126
  */
