@@ -82,10 +82,10 @@ const data = readFileAndReturnArrayOfStrings('./aoc-2020-day07.txt');
 
 console.log('Unique bag colors that can contain at least one',
   'shiny gold bag', solveDay07Part1(data).length);
+ */
 
 console.log('Unique bag colors that can contain at least one',
   'shiny gold bag', solveDay07Part1(testData).length);
- */
 
 /**
  * $ node ./aoc-2020-day07.js
