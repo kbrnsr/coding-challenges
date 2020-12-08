@@ -31,12 +31,15 @@ const CputThread = (instructions, initialAcc) => {
     }
     return true;
   };
-  const tExecute = () => {
-    if (tInstructIndex >= instructions.length) {
-      return [tInstructIndex, tAcc];
+  const tExecute = (iToExecute) => {
+    let i;
+    for (i = 0; i < iToExecute; i++) {
+      if (tInstructIndex >= instructions.length) {
+        return [tInstructIndex, tAcc];
+      }
+      execInstruct(instructions[tInstructIndex])
+      tInstructIndex += 1;
     }
-    execInstruct(instructions[tInstructIndex])
-    tInstructIndex += 1;
     return [tInstructIndex, tAcc];
   };
   return {
@@ -56,7 +59,7 @@ const Cpu = (instructions) => {
       } else {
         executed.push(tPointer);
       }
-      [tPointer, tValue] = cpuT.tExecute();
+      [tPointer, tValue] = cpuT.tExecute(1);
       if (instructions[tPointer] === undefined) {
         continueExec = false;
       }
@@ -88,6 +91,20 @@ const solveDay08Part1 = (Data) => {
   const result = Cpu(instructions).execute();
   return result;
 };
+
+/* 
+import { readFileAndReturnArrayOfStrings } from './aoc-2020-api.mjs';
+
+const data = readFileAndReturnArrayOfStrings('./aoc-2020-day08.txt');
+const result = solveDay08Part1(data);
+console.log('Stop before executing [index, accumulator]'
+  , [result[0], result[1][0]]);
+ */
+
+/**
+ * $ node ./aoc-2020-day08.js
+ * Stop before executing [index, accumulator] [ 488, 1941 ]
+ */
 
 const testResult = solveDay08Part1(testData);
 console.log('Stop before executing [index, accumulator]'
