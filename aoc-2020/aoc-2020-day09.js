@@ -4,34 +4,41 @@ const testData = [35, 20, 15, 25, 47, 40, 62, 55
 
 const slidingWindow = (data) => {
   const validSums = [];
-  const validTuples = [];
+  /**
+   * data = [1, 2, 3];
+   * validSums = [[3, 4], [3, 5], [4, 5]]
+   */
   data.map((first, i) => {
-    validSums.push([]); validTuples.push([]);
+    validSums.push([]);
     data.map((second) => {
       if (first != second) {
         validSums[i].push(first + second);
-        validTuples[i].push([first, second]);
       }
     })
   });
-  const slide = (value) => {
-    const isInContainer = validSums
-      .reduce((acc, c) => {
-        return c.includes(value) || acc;
-      }, false);
-    if (!isInContainer) {
-      return false;
-    }
-    // Calculate and insert
-    data.shift(); validSums.shift(); validTuples.shift();
-    data.push(value); validSums.push([]); validTuples.push([]);
+
+  const isValInValidSums = (val) => {
+    return validSums.reduce((acc, sumArray) => {
+      return sumArray.includes(val) || acc;
+    }, false);
+  }
+
+  const calculateAndInsertValue = (val) => {
+    data.shift(); validSums.shift();
+    data.push(val); validSums.push([]);
     data.map(first => {
       const cIndex = data.length - 1;
-      if (value != first) {
-        validSums[cIndex].push(value + first);
-        validTuples[cIndex].push([value, first]);
+      if (val != first) {
+        validSums[cIndex].push(val + first);
       }
     });
+  }
+
+  const slide = (value) => {
+    if (!isValInValidSums(value)) {
+      return false;
+    }
+    calculateAndInsertValue(value)
     return true;
   };
   return {
@@ -42,13 +49,17 @@ const slidingWindow = (data) => {
 const slidingRange = (range, data) => {
   let rStart = 0;
   let rEnd = range;
+  // sum = all values in range added together
   let sum = data.slice(rStart, rEnd)
-    .reduce((acc, val) => acc + val, 0);
+    .reduce((acc, val) => acc + val
+      , 0);
+
   const findSum = (value) => {
     while (rEnd < data.length) {
       if (sum === value) {
         return [true, [rStart, rEnd, sum]];
       }
+      // Adjust sum and slide range by 1
       sum -= data[rStart]; sum += data[rEnd];
       rStart += 1; rEnd += 1;
     }
@@ -62,21 +73,23 @@ const slidingRange = (range, data) => {
 const validateData = (window, data) => {
   const xmas = slidingWindow(data.slice(0, window));
   let contExec = true;
-  let invalid;
+  let invalidVal;
   data.slice(window).map((val) => {
     if (contExec) {
       const xmasBool = xmas.slide(val);
       if (!xmasBool) {
         contExec = false;
-        invalid = val;
+        invalidVal = val;
       }
     }
   });
-  return invalid;
+  return invalidVal;
 };
 
 const findRange = (sum, data) => {
   let range = 2;
+  // Generate ranges
+  // , min = 2, max = length of data array
   while (range <= data.length) {
     const xmas = slidingRange(range, data);
     const [rangeBool, rangeRange] = xmas.findSum(sum);
