@@ -65,6 +65,7 @@ const slidingRange = (range, data) => {
     }
     return [false, [0, 0, 0]];
   };
+
   return {
     findSum
   };
