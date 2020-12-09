@@ -41,6 +41,7 @@ const slidingWindow = (data) => {
     calculateAndInsertValue(value)
     return true;
   };
+
   return {
     slide
   };
