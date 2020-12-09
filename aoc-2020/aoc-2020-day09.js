@@ -39,6 +39,26 @@ const slidingWindow = (data) => {
   };
 };
 
+const slidingRange = (range, data) => {
+  let rStart = 0;
+  let rEnd = range;
+  let sum = data.slice(rStart, rEnd)
+    .reduce((acc, val) => acc + val, 0);
+  const findSum = (value) => {
+    while (rEnd < data.length) {
+      if (sum === value) {
+        return [true, [rStart, rEnd, sum]];
+      }
+      sum -= data[rStart]; sum += data[rEnd];
+      rStart += 1; rEnd += 1;
+    }
+    return [false, [0, 0, 0]];
+  };
+  return {
+    findSum
+  };
+};
+
 const validateData = (window, data) => {
   const xmas = slidingWindow(data.slice(0, window));
   let contExec = true;
@@ -55,25 +75,56 @@ const validateData = (window, data) => {
   return invalid;
 };
 
+const findRange = (sum, data) => {
+  let range = 2;
+  while (range <= data.length) {
+    const xmas = slidingRange(range, data);
+    const [rangeBool, rangeRange] = xmas.findSum(sum);
+    if (rangeBool) {
+      return [rangeRange];
+    }
+    range += 1;
+  }
+};
+
 const solveDay09Part1 = (window, data) => {
   return validateData(window, data);
+};
+
+const solveDay09Part2 = (sum, data) => {
+  const [rangeRange] = findRange(sum, data);
+  const [rangeStart, rangeEnd,] = rangeRange;
+  const rangeArray = [...data.slice(rangeStart, rangeEnd)];
+  rangeArray.sort((a, b) => a - b);
+  const [low, high] = [rangeArray[0]
+    , rangeArray[rangeArray.length - 1]];
+  return low + high;
 };
 
 /* 
 import { readFileAndReturnArrayOfIntegers } from './aoc-2020-api.mjs';
 
 const data = readFileAndReturnArrayOfIntegers('./aoc-2020-day09.txt');
-console.log('Invalid value found', solveDay09Part1(25, data));
+
+const inputInvalid = solveDay09Part1(25, data);
+console.log('Invalid value found', inputInvalid);
+console.log('Encryption weakness'
+  , solveDay09Part2(inputInvalid, data));
  */
 
 /**
  * $ node ./aoc-2020-day09.js
  * Invalid value found 507622668
+ * Encryption weakness 76688505
  */
 
-console.log('Invalid value found', solveDay09Part1(5, testData));
+const testInvalid = solveDay09Part1(5, testData)
+console.log('Invalid value found', testInvalid);
+console.log('Encryption weakness'
+  , solveDay09Part2(testInvalid, testData));
 
 /**
  * $ node ./aoc-2020-day09.js
  * Invalid value found 127
+ * Encryption weakness 62
  */
