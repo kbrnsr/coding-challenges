@@ -19,7 +19,7 @@ const StateMachine = (instructions) => {
           console.error('jmp 0 failure')
           return;
         }
-        // JMP value - 1 => increase it in caller
+        // JMP value - 1 => +1 in caller
         setState({ pointer: (pointer + payload) - 1 });
         break;
       case ACC:
