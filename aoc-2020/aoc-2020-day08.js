@@ -16,8 +16,7 @@ const StateMachine = (instructions) => {
     switch (opcode) {
       case JMP:
         if (payload === 0) {
-          console.error('jmp 0 failure')
-          return;
+          return false;
         }
         // JMP value - 1 => +1 in caller
         setState({ pointer: (pointer + payload) - 1 });
@@ -26,10 +25,9 @@ const StateMachine = (instructions) => {
         setState({ acc: acc + payload });
         break;
       case NOP: break;
-      default:
-        console.log(`Fatal: ${instruct}`);
+      default: return false;
     }
-    return;
+    return true;
   };
 
   const setState = (val) => {
@@ -41,10 +39,10 @@ const StateMachine = (instructions) => {
     if (executed.includes(pointer)) {
       return false;
     }
-    execInstruct(instructions[pointer]);
+    const executeBool = execInstruct(instructions[pointer]);
+    if (!executeBool) { return false; }
     executed.push(pointer);
     // need to consider if we executed a JMP
-    const newPointer = state.pointer;
     setState({ pointer: state.pointer + 1, executed });
     return true;
   };
