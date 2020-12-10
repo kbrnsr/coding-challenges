@@ -1,74 +1,85 @@
-const testData = ['nop +0',
-  'acc +1',
-  'jmp +4',
-  'acc +3',
-  'jmp -3',
-  'acc -99',
-  'acc +1',
-  'jmp -4',
-  'acc +6'];
+const testData = ['nop +0', 'acc +1', 'jmp +4', 'acc +3'
+  , 'jmp -3', 'acc -99', 'acc +1', 'jmp -4', 'acc +6'];
 const [ACC, NOP, JMP] = ['acc', 'nop', 'jmp'];
+// Instruction = {opcode: string, payload: integer}
 
-const Cpu = (instructions) => {
-  let cAcc = 0;
-  let instructPointer = 0;
+const StateMachine = (instructions) => {
+  let state = {
+    acc: 0,
+    pointer: 0,
+    executed: []
+  };
+
   const execInstruct = (instruct) => {
-    const { opcode, sign, aInteger } = instruct;
-    const theInteger = parseInt([sign, aInteger]
-      .join(''));
+    const { acc, pointer } = state;
+    const { opcode, payload } = instruct;
     switch (opcode) {
       case JMP:
-        instructPointer += theInteger;
-        instructPointer -= 1;
+        if (payload === 0) {
+          console.error('jmp 0 failure')
+          return;
+        }
+        // JMP value - 1 => increase it in caller
+        setState({ pointer: (pointer + payload) - 1 });
         break;
       case ACC:
-        cAcc += theInteger;
+        setState({ acc: acc + payload });
         break;
-      case NOP:
-        break;
+      case NOP: break;
       default:
-        console.log('Something has gone terribly wrong');
-        return false;
+        console.log(`Fatal: ${instruct}`);
     }
-    return true;
+    return;
+  };
+
+  const setState = (val) => {
+    state = { ...state, ...val };
   };
 
   const execute = () => {
-    const executed = [];
-    const accArray = [];
-    let continueExec = true;
-    while (continueExec) {
-      if (executed.includes(instructPointer)) {
-        return [accArray, executed];
-      }
-      execInstruct(instructions[instructPointer]);
-      executed.unshift(instructPointer);
-      accArray.unshift(cAcc);
-      instructPointer += 1;
-      // Next instruction doesn't exist
-      if (instructions[instructPointer] === undefined) {
-        continueExec = false;
+    const { executed, pointer } = state;
+    if (executed.includes(pointer)) {
+      return false;
+    }
+    execInstruct(instructions[pointer]);
+    executed.push(pointer);
+    // need to consider if we executed a JMP
+    const newPointer = state.pointer;
+    setState({ pointer: state.pointer + 1, executed });
+    return true;
+  };
+
+  const findLoop = () => {
+    const stateChanges = [];
+    let contExec = true;
+    while (contExec) {
+      const executeBool = execute();
+      stateChanges.push({
+        ...state, executed: [...state.executed]
+      });
+      if (state.pointer >= instructions.length
+        || !executeBool) {
+        contExec = false;
       }
     }
-    return [accArray, executed];
+    return stateChanges;
   };
 
   return {
-    execute
+    findLoop
   };
 };
 
 const parseDatum = (datum) => {
   const instructionRegex = /(acc|nop|jmp){1} (\+|-)(\d+)/;
   const parsedDatum = [...datum.match(instructionRegex)];
-  const [, opcode, sign, aInteger] = parsedDatum;
+  const [, opcode, sign, theInteger] = parsedDatum;
   const instruction = {
     opcode,
-    sign,
-    aInteger
+    payload: parseInt([sign, theInteger].join(''))
   };
-  return instruction
-}
+  return instruction;
+};
 
 const transformDataToInstructions = (data) => {
   const instructions = data.map((datum) => {
@@ -79,7 +90,8 @@ const transformDataToInstructions = (data) => {
 
 const solveDay08Part1 = (data) => {
   const instructions = transformDataToInstructions(data);
-  const result = Cpu(instructions).execute();
+  const sm = StateMachine(instructions);
+  const result = sm.findLoop();
   return result;
 };
 
@@ -87,20 +99,23 @@ const solveDay08Part1 = (data) => {
 import { readFileAndReturnArrayOfStrings } from './aoc-2020-api.mjs';
 
 const data = readFileAndReturnArrayOfStrings('./aoc-2020-day08.txt');
-
-console.log('Accumulator before hitting infinite loop'
-  , solveDay08Part1(data)[0][1]);
+const inputChanges = solveDay08Part1(data);
+const inputChangeIndex = inputChanges.length - 1;
+console.log('Accumulator before infite loop'
+  , inputChanges[inputChangeIndex].acc);
  */
 
 /**
- * $ node ./aoc-2020-day08.js
- * Accumulator before hitting infinite loop 1941
+ * $ node aoc-2020-day08.js
+ * Accumulator before infite loop 1941
  */
 
-console.log('Accumulator before hitting infinite loop'
-  , solveDay08Part1(testData)[0][1]);
+const testChanges = solveDay08Part1(testData);
+const testChangeIndex = testChanges.length - 1;
+console.log('Accumulator before infite loop'
+  , testChanges[testChangeIndex].acc);
 
 /**
- * $ node ./aoc-2020-day08.js
- * Accumulator before hitting infinite loop 5
+ * $ node aoc-2020-day08.js
+ * Accumulator before infite loop 5
  */
