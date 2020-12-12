@@ -8,8 +8,8 @@ const testData = ['F10', 'N3', 'F7', 'R90', 'F11'];
  * |___________ 
  */
 
-const NORTH = 'N', SOUTH = 'S', EAST = 'E', WEST = 'W';
-const LEFT = 'L', RIGHT = 'R', FORWARD = 'F';
+const [NORTH, SOUTH, EAST, WEST, LEFT, RIGHT, FORWARD]
+  = ['N', 'S', 'E', 'W', 'L', 'R', 'F'];
 
 const degreeToUnitX = (degree) => Math.round(Math.cos(degree));
 const degreeToUnitY = (degree) => Math.round(Math.sin(degree));
@@ -23,7 +23,7 @@ const extractInfoFromData = (data) => {
 }
 
 const navigate = (action, value, coordX, coordY, degree) => {
-  let newCoordX = coordX, newCoordY = coordY, newDegree = degree;
+  let [newCoordX, newCoordY, newDegree] = [coordX, coordY, degree];
 
   switch (action) {
     case NORTH:
