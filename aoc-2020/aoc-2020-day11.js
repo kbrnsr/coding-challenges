@@ -20,13 +20,9 @@ const SeatingSystem = (seats) => {
 
   const isValInRange = (val) => (val >= 0 && val < dimension);
 
-  const sliceStart = (val) => {
-    return (val === 0) ? val : val - 1;
-  };
+  const sliceStart = (val) => (val === 0) ? val : val - 1;
 
-  const sliceEnd = (val) => {
-    return (val === dimension - 1) ? val + 1 : val + 2;
-  };
+  const sliceEnd = (val) => (val === dimension - 1) ? val + 1 : val + 2;
 
   const seatSlice = (i, j) => {
     return seats.slice(sliceStart(i), sliceEnd(i))
@@ -55,14 +51,12 @@ const SeatingSystem = (seats) => {
   const changeSeat = (i, j) => {
     const seat = seats[i][j];
     if (seat === FLOOR) { return FLOOR; };
-    const [emptyCount, occupiedCount] = countSliceEmptyOccupied(i, j);
+    const [, occupiedCount] = countSliceEmptyOccupied(i, j);
     if (seat === EMPTY) {
       if (occupiedCount === 0) { return OCCUPIED; }
-      return seat;
     }
     if (seat === OCCUPIED) {
       if (occupiedCount >= 4) { return EMPTY; }
-      return seat;
     }
     return seat
   };
@@ -71,52 +65,22 @@ const SeatingSystem = (seats) => {
     const nextStepI = seatI + stepI;
     const nextStepJ = seatJ + stepJ;
 
-    const column = (stepI === 0 && stepJ !== 0);
-    const row = (stepI !== 0 && stepJ === 0);
-    const rowcolumn = (stepI !== 0 && stepJ !== 0);
-
-    if (column) {
-      let j;
-      for (j = nextStepJ; isValInRange(j); j += stepJ) {
-        const seat = seats[nextStepI][j];
-        if (seat === EMPTY || seat === OCCUPIED) {
-          return seat;
-        }
+    let i = nextStepI; let j = nextStepJ;
+    while (isValInRange(i) && isValInRange(j)) {
+      const seat = seats[i][j];
+      if (seat === EMPTY || seat === OCCUPIED) {
+        return seat;
       }
+      i += stepI; j += stepJ;
     }
-
-    if (row) {
-      let i;
-      for (i = nextStepI; isValInRange(i); i += stepI) {
-        const seat = seats[i][nextStepJ];
-        if (seat === EMPTY || seat === OCCUPIED) {
-          return seat;
-        }
-      }
-    }
-
-    if (rowcolumn) {
-      let i = nextStepI; let j = nextStepJ;
-      while (isValInRange(i) && isValInRange(j)) {
-        const seat = seats[i][j];
-        if (seat === EMPTY || seat === OCCUPIED) {
-          return seat;
-        }
-        i += stepI; j += stepJ;
-      }
-    }
-
     return FLOOR;
   };
 
   const lookAndFindForPos = (seatI, seatJ) => {
-    const whatIsFound = [];
-    let stepIndex;
-    for (stepIndex = 0; stepIndex < steps.length; stepIndex += 1) {
-      const [stepI, stepJ] = steps[stepIndex];
-      const foundChar = lookInDirection(stepI, stepJ, seatI, seatJ);
-      whatIsFound.push(foundChar);
-    }
+    const whatIsFound = steps.map((step) => {
+      const [stepI, stepJ] = step;
+      return lookInDirection(stepI, stepJ, seatI, seatJ);
+    });
     return whatIsFound;
   };
 
@@ -126,38 +90,35 @@ const SeatingSystem = (seats) => {
     const foundSeats = lookAndFindForPos(seatI, seatJ);
     const [emptyCount, occupiedCount] = foundSeats
       .reduce(([empties, occupies], curr) => {
-        if (curr === EMPTY) {
-          return [empties + 1, occupies];
-        }
-        if (curr === OCCUPIED) {
-          return [empties, occupies + 1];
-        }
+        if (curr === EMPTY) { return [empties + 1, occupies]; }
+        if (curr === OCCUPIED) { return [empties, occupies + 1]; }
         return [empties, occupies];
       }, [0, 0]);
     if (seat === EMPTY) {
       if (occupiedCount === 0) { return OCCUPIED; }
-      return seat;
     }
     if (seat === OCCUPIED) {
       if (occupiedCount >= 5) { return EMPTY; }
-      return seat;
     }
     return seat
   };
 
   return {
-    changeSeat,
     countEmptyOccupied,
+    changeSeat,
     changeSeat2
+
   };
 };
 
-const playRound = (seats) => {
-  const ss = SeatingSystem(seats);
+const playRound = (seats, runPart1) => {
   let changed = 0;
+  const ss = SeatingSystem(seats);
   const newSeats = seats.map((row, i) => {
     return row.map((val, j) => {
-      const newVal = ss.changeSeat(i, j);
+
+      const newVal = (runPart1) ?
+        ss.changeSeat(i, j) : ss.changeSeat2(i, j);
       if (val !== newVal) { changed += 1; }
       return newVal;
     })
@@ -165,37 +126,11 @@ const playRound = (seats) => {
   return [changed, newSeats];
 };
 
-const playUntilNoChange = (seats) => {
+const playUntilNoChange = (seats, runPart1) => {
   let continueExec = true;
   let lastRound = seats;
   while (continueExec) {
-    const [changed, newSeats] = playRound(lastRound);
-    lastRound = newSeats;
-    if (changed === 0) {
-      continueExec = false;
-    }
-  }
-  return lastRound;
-};
-
-const playRound2 = (seats) => {
-  const ss = SeatingSystem(seats);
-  let changed = 0;
-  const newSeats = seats.map((row, i) => {
-    return row.map((val, j) => {
-      const newVal = ss.changeSeat2(i, j);
-      if (val !== newVal) { changed += 1; }
-      return newVal;
-    })
-  });
-  return [changed, newSeats];
-};
-
-const playUntilNoChange2 = (seats) => {
-  let continueExec = true;
-  let lastRound = seats;
-  while (continueExec) {
-    const [changed, newSeats] = playRound2(lastRound);
+    const [changed, newSeats] = playRound(lastRound, runPart1);
     lastRound = newSeats;
     if (changed === 0) {
       continueExec = false;
@@ -205,16 +140,16 @@ const playUntilNoChange2 = (seats) => {
 };
 
 const solveDay11Part1 = (data) => {
-  const board = playUntilNoChange(data);
-  const ss = SeatingSystem(board);
-  const [countE, countO] = ss.countEmptyOccupied(board);
+  const seats = playUntilNoChange(data, true);
+  const ss = SeatingSystem(seats);
+  const [, countO] = ss.countEmptyOccupied(seats);
   return countO;
 };
 
 const solveDay11Part2 = (data) => {
-  const board = playUntilNoChange2(data);
+  const board = playUntilNoChange(data, false);
   const ss = SeatingSystem(board);
-  const [countE, countO] = ss.countEmptyOccupied(board);
+  const [, countO] = ss.countEmptyOccupied(board);
   return countO;;
 };
 
@@ -230,6 +165,7 @@ console.log('Occupied seats after playing', solveDay11Part2(data));
 /**
  * $ node ./aoc-2020-day11.js
  * Occupied seats after playing 2470
+ * Occupied seats after playing 2259
  */
 
 console.log('Occupied seats after playing', solveDay11Part1(testData));
